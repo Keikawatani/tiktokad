@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<!-- 夜投稿(診断系)用：視覚インパクト重視のポップレイアウト。
+     format = "grid"(12星座/MBTIの%グリッド) / "groups"(グループ分け) -->
+<style>
+  :root{ --bg1:#FFF4D6; --bg2:#FFE29A; --fill:#fff; --stroke:#E1600C; --num:#F0600C; --ink:#5A4A22; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{width:1080px; height:1920px;}
+  body{font-family:"M PLUS Rounded 1c","Zen Maru Gothic",sans-serif; color:var(--ink);
+    background:
+      radial-gradient(900px 700px at 80% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
+      linear-gradient(165deg, var(--bg1), var(--bg2));
+    overflow:hidden;}
+  .frame{position:absolute; inset:40px; display:flex; flex-direction:column;}
+
+  /* ===== 見出し（袋文字ポップ） ===== */
+  header{text-align:center; padding:14px 0 8px;}
+  h1{font-family:"M PLUS Rounded 1c"; font-weight:800; font-size:120px; line-height:1.0;
+    color:var(--fill); -webkit-text-stroke:18px var(--stroke); paint-order:stroke fill;
+    letter-spacing:.01em; filter:drop-shadow(0 9px 0 rgba(0,0,0,.20)); white-space:nowrap;}
+  .subtitle{display:inline-block; margin-top:18px; font-weight:800; font-size:44px; color:#fff;
+    background:var(--stroke); padding:9px 38px; border-radius:999px;
+    box-shadow:0 8px 0 rgba(0,0,0,.14);}
+
+  /* ===== グリッド（%） ===== */
+  .grid{flex:1; display:grid; gap:18px; padding:20px 2px; grid-auto-rows:1fr; align-content:stretch;}
+  .grid.c3{grid-template-columns:repeat(3,1fr);}
+  .grid.c4{grid-template-columns:repeat(4,1fr);}
+  .cell{display:flex; align-items:center; gap:14px; background:rgba(255,255,255,.82);
+    border-radius:26px; padding:16px 18px; box-shadow:0 8px 0 rgba(0,0,0,.06), inset 0 0 0 3px rgba(255,255,255,.9);}
+  .cell.c4col{flex-direction:column; text-align:center; gap:8px; padding:16px 10px;}
+
+  .ava{flex:0 0 auto; width:104px; height:104px; border-radius:24px; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:800; font-size:34px; overflow:hidden;
+    box-shadow:inset 0 -6px 12px rgba(0,0,0,.12), inset 0 4px 8px rgba(255,255,255,.5);}
+  .ava img{width:100%; height:100%; object-fit:contain;}
+  .c4col .ava{width:120px; height:120px;}
+  .signname{font-size:23px; font-weight:800; color:var(--ink); margin-top:4px;}
+
+  .info{flex:1; min-width:0;}
+  .pct{font-family:"M PLUS Rounded 1c"; font-weight:800; color:var(--num); line-height:.95;
+    font-size:66px; letter-spacing:-.02em;}
+  .pct small{font-size:34px; margin-left:2px;}
+  .label{font-size:30px; font-weight:800; color:#40372a; margin-top:2px; line-height:1.1;}
+  .desc{font-size:24px; font-weight:500; color:#7a7060; margin-top:3px; line-height:1.15;}
+  .c4col .label{font-size:26px;} .c4col .desc{font-size:21px;}
+  .c4col .pct{font-size:56px;}
+
+  /* ===== グループ分け ===== */
+  .groups{flex:1; display:flex; flex-direction:column; justify-content:space-evenly; padding:20px 0;}
+  .gblock{background:rgba(255,255,255,.66); border-radius:34px; padding:22px 26px;
+    box-shadow:0 10px 0 rgba(0,0,0,.06), inset 0 0 0 4px rgba(255,255,255,.75);}
+  .ghead{display:inline-block; font-weight:800; font-size:46px; color:#fff; background:var(--stroke);
+    padding:8px 32px; border-radius:999px; box-shadow:0 6px 0 rgba(0,0,0,.14);}
+  .gsub{font-size:30px; font-weight:700; color:#615542; margin:10px 4px 16px;}
+  .grow{display:flex; justify-content:space-around; gap:14px;}
+  .gitem{flex:1; text-align:center;}
+  .gitem .ava{width:132px; height:132px; margin:0 auto; border-radius:26px;}
+  .gitem .signname{font-size:26px; margin-top:8px;}
+
+  footer{text-align:center; padding-top:10px;}
+  .handle{display:inline-block; font-size:32px; font-weight:800; color:#fff; background:rgba(0,0,0,.18);
+    padding:6px 26px; border-radius:999px;}
+  .disc{font-size:20px; color:rgba(0,0,0,.32); margin-top:8px;}
+</style>
+</head>
+<body>
+  <div class="frame">
+    <header><h1 id="title"></h1><div class="subtitle" id="subtitle"></div></header>
+    <div id="stage"></div>
+    <footer><span class="handle" id="handle"></span><div class="disc">※エンタメ診断（初稿）</div></footer>
+  </div>
+<script>
+function fitTitle(){const h=document.getElementById('title');const max=1080-80-40;let fs=104;h.style.fontSize=fs+'px';
+  while(h.scrollWidth>max&&fs>44){fs-=2;h.style.fontSize=fs+'px';}}
+function ava(cell,cls){
+  if(cell.mascot) return `<div class="ava ${cls||''}"><img src="${cell.mascot}"></div>`;
+  // キャラ画像が無い間は、色タイル（＝キャラを入れる枠）を表示。名前は下に出す。
+  const g=cell.grad||['#FFB0CE','#FF7EB6'];
+  return `<div class="ava ${cls||''}" style="background:linear-gradient(150deg,${g[0]},${g[1]})"></div>`;
+}
+function render(d){
+  const S=d.style||{}; const rs=document.documentElement.style;
+  for(const k of ['bg1','bg2','fill','stroke','num','ink']) if(S[k]) rs.setProperty('--'+k,S[k]);
+  document.getElementById('title').textContent=d.title;
+  document.getElementById('subtitle').textContent=d.subtitle;
+  document.getElementById('handle').textContent=d.handle||'';
+  const stage=document.getElementById('stage');
+  stage.style.flex='1'; stage.style.display='flex'; stage.style.flexDirection='column';
+
+  if(d.format==='grid'){
+    const c4=d.cells.length>12;
+    const el=document.createElement('div'); el.className='grid '+(c4?'c4':'c3');
+    for(const cell of d.cells){
+      const box=document.createElement('div'); box.className='cell'+(c4?' c4col':'');
+      const avaHtml=ava(cell,'')+(c4?`<div class="signname">${cell.name}</div>`:'');
+      const nameUnder=c4?'':`<div class="signname">${cell.name}</div>`;
+      box.innerHTML = c4
+        ? `${ava(cell)}<div class="signname">${cell.name}</div>
+           <div class="pct">${cell.value}<small>${d.unit||''}</small></div>
+           <div class="label">${cell.label}</div><div class="desc">${cell.desc||''}</div>`
+        : `<div style="display:flex;flex-direction:column;align-items:center">${ava(cell)}<div class="signname">${cell.name}</div></div>
+           <div class="info"><div class="pct">${cell.value}<small>${d.unit||''}</small></div>
+           <div class="label">${cell.label}</div><div class="desc">${cell.desc||''}</div></div>`;
+      el.appendChild(box);
+    }
+    stage.appendChild(el);
+  } else { // groups
+    const el=document.createElement('div'); el.className='groups';
+    for(const g of d.groups){
+      const b=document.createElement('div'); b.className='gblock';
+      const items=g.cells.map(c=>`<div class="gitem">${ava(c)}<div class="signname">${c.name}</div></div>`).join('');
+      b.innerHTML=`<div class="ghead">${g.head}</div>${g.sub?`<div class="gsub">${g.sub}</div>`:''}<div class="grow">${items}</div>`;
+      el.appendChild(b);
+    }
+    stage.appendChild(el);
+  }
+  fitTitle();
+}
+if(window.__DATA__) render(window.__DATA__);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitTitle);
+</script>
+</body>
+</html>
