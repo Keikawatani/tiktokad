@@ -4,13 +4,15 @@
 星座占い・血液型占い・ラッキーカラーなどを曜日ごとにローテーションし、可愛いパステルデザインで書き出します。
 
 <p>
-  <img src="samples/2026-07-27_zodiac_overall.png" width="220">
-  <img src="samples/2026-07-28_blood_overall.png" width="220">
-  <img src="samples/2026-07-30_lucky_color.png" width="220">
+  <img src="samples/zodiac_overall.png" width="200">
+  <img src="samples/blood_pair.png" width="200">
+  <img src="samples/mbti_overall.png" width="200">
+  <img src="samples/lucky_color.png" width="200">
 </p>
 
 > ⚠️ 収益（再生数マネタイズ）の現実と、静止画コンテンツならではの注意点を必ず先に読んでください → **[docs/strategy.md](docs/strategy.md)**
 > 量産の具体フロー → **[docs/workflow.md](docs/workflow.md)**
+> 参考画像のような「星座キャラ」を出す方法 → **[docs/mascots.md](docs/mascots.md)**
 
 ---
 
@@ -21,17 +23,19 @@
 3. **動画化** … 静止画＋BGMを ffmpeg で縦型MP4に。BGM無しなら無音動画（テスト用）。
 4. **キャプション生成** … ハッシュタグ入りの投稿文を `caption.txt` として同時出力。
 
-日替わりローテーション（初期設定・`fortune/schedule.py` で変更可）:
+投稿ローテーションは **2週間サイクル**（曜日で系統を固定しつつ隔週で変化＝飽き対策）。`fortune/schedule.py` で変更可:
 
-| 曜 | テーマ | 内容 |
+| 曜 | 第1週 | 第2週 |
 |---|---|---|
-| 月 | `zodiac_overall` | 12星座 総合運ランキング |
-| 火 | `blood_overall` | 血液型 今日のごきげん運 |
-| 水 | `zodiac_love` | 12星座 恋愛運ランキング |
-| 木 | `lucky_color` | 12星座 ラッキーカラー診断 |
-| 金 | `zodiac_money` | 12星座 金運ランキング |
-| 土 | `blood_compat` | 血液型 相性ランキング |
-| 日 | `zodiac_weekly` | 今週の運勢まとめ |
+| 月 | 12星座 総合運ランキング | **MBTI 運勢ランキング（16タイプ）** |
+| 火 | 血液型 ごきげん運 | **血液型ペア相性（A×B等）** |
+| 水 | 12星座 恋愛運ランキング | **星座ペア相性（かに座×しし座等）** |
+| 木 | 12星座 ラッキーカラー診断 | **MBTI 恋愛運ランキング** |
+| 金 | 12星座 金運ランキング | MBTI 運勢ランキング |
+| 土 | 血液型 相性ランキング | 星座ペア相性 |
+| 日 | 今週の運勢まとめ | 今週の運勢まとめ |
+
+**掛け合わせペア**（血液型ペア／星座ペア）と **MBTI** も収録済み。太字が今回追加分です。
 
 ---
 
@@ -96,9 +100,11 @@ scripts/
 assets/
   fonts/              ローカル化した丸ゴシックフォント（Zen Maru Gothic / M PLUS Rounded 1c）
   bgm/                BGMを置く場所（利用条件は docs/workflow.md 参照）
+  mascots/            キャラ画像を置くと各行に自動表示（docs/mascots.md）
 docs/
   strategy.md         収益化の現実と伸ばし方（最初に読む）
   workflow.md         量産の具体フロー
+  mascots.md          参考画像のような星座キャラを出す方法
   schedule.csv        自動生成される投稿スケジュール
 samples/              サンプル出力（各テーマ1枚ずつ）
 ```

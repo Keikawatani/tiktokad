@@ -6,9 +6,19 @@
 """
 
 import hashlib
+import os
 import random
 
 from . import data, schedule
+
+_MASCOT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "mascots")
+
+
+def _mascot_rel(key):
+    """assets/mascots/<key>.png があれば、テンプレートから見た相対パスを返す。無ければ None。"""
+    if key and os.path.exists(os.path.join(_MASCOT_DIR, f"{key}.png")):
+        return f"../assets/mascots/{key}.png"
+    return None
 
 # 投稿者ハンドル・CTA はここを書き換えるだけで全動画に反映される。
 HANDLE = "@uranai_daily"
@@ -85,7 +95,7 @@ def _zodiac_rows(rng, msg_key):
         tier = _tier_for_rank(rank, total)
         it = item()
         rows.append({
-            "rank": rank, "name": z["name"], "sub": z["dates"], "grad": list(z["grad"]),
+            "rank": rank, "key": z["key"], "name": z["name"], "sub": z["dates"], "grad": list(z["grad"]),
             "comment": msg(tier), "item": it, "note": f"ラッキー: {it}",
             "stars": _stars(tier), "swatch": None,
         })
@@ -105,7 +115,7 @@ def _blood_rows(rng, msg_key):
         tier = _tier_for_rank(rank, total)
         c = color(); it = item()
         rows.append({
-            "rank": rank, "name": b["name"], "sub": "", "grad": list(b["grad"]),
+            "rank": rank, "key": b["key"], "name": b["name"], "sub": "", "grad": list(b["grad"]),
             "comment": msg(tier), "item": it, "note": f"ラッキーカラー: {c[0]}／{it}",
             "stars": _stars(tier), "swatch": c[1],
         })
@@ -123,7 +133,7 @@ def _blood_compat_rows(rng, msg_key):
         tier = _tier_for_rank(rank, total)
         partner = _pick(rng, [x for x in data.BLOOD if x["key"] != b["key"]])
         rows.append({
-            "rank": rank, "name": b["name"], "sub": "", "grad": list(b["grad"]),
+            "rank": rank, "key": b["key"], "name": b["name"], "sub": "", "grad": list(b["grad"]),
             "comment": msg(tier), "item": f"相性◎ {partner['name']}", "note": f"今日の相性◎は {partner['name']}",
             "stars": _stars(tier), "swatch": None,
         })
@@ -138,11 +148,79 @@ def _lucky_color_rows(rng, _msg_key):
     for z in data.ZODIAC:
         c = color(); it = item()
         rows.append({
-            "rank": None, "name": z["name"], "sub": z["dates"], "grad": list(z["grad"]),
+            "rank": None, "key": z["key"], "name": z["name"], "sub": z["dates"], "grad": list(z["grad"]),
             "comment": c[0], "item": it, "note": f"ラッキー: {it}",
             "stars": None, "swatch": c[1],
         })
     return rows
+
+
+def _mbti_rows(rng, msg_key):
+    order = data.MBTI[:]
+    rng.shuffle(order)
+    msg = _msg_stream(rng, msg_key)
+    item = _picker(rng, data.LUCKY_ITEMS)
+    rows = []
+    total = len(order)
+    for i, m in enumerate(order):
+        rank = i + 1
+        tier = _tier_for_rank(rank, total)
+        it = item()
+        rows.append({
+            "rank": rank, "key": m["key"], "name": m["name"], "sub": m["sub"], "grad": list(m["grad"]),
+            "comment": msg(tier), "item": it, "note": f"ラッキー: {it}",
+            "stars": _stars(tier), "swatch": None,
+        })
+    return rows
+
+
+def _pairs_from(seq, include_same):
+    out = []
+    for i, a in enumerate(seq):
+        for j, b in enumerate(seq):
+            if j < i:
+                continue
+            if j == i and not include_same:
+                continue
+            out.append((a, b))
+    return out
+
+
+def _pair_rows(rng, msg_key, seq, include_same, top_n):
+    pairs = _pairs_from(seq, include_same)
+    rng.shuffle(pairs)
+    pairs = pairs[:top_n]
+    msg = _msg_stream(rng, msg_key)
+    rows = []
+    total = len(pairs)
+    for i, (a, b) in enumerate(pairs):
+        rank = i + 1
+        tier = _tier_for_rank(rank, total)
+        rows.append({
+            "rank": rank,
+            "name": f"{a['name']} × {b['name']}",
+            "sub": "",
+            "grad": list(a["grad"]),
+            "pair": [
+                {"name": a["name"], "grad": list(a["grad"])},
+                {"name": b["name"], "grad": list(b["grad"])},
+            ],
+            "comment": msg(tier),
+            "item": "相性◎",
+            "note": "今日の相性◎",
+            "stars": _stars(tier), "swatch": None,
+        })
+    return rows
+
+
+def _blood_pair_rows(rng, msg_key):
+    # 4型 -> 同型含む10ペア。上位8を出す。
+    return _pair_rows(rng, msg_key, data.BLOOD, include_same=True, top_n=8)
+
+
+def _zodiac_pair_rows(rng, msg_key):
+    # 12星座 -> 66ペア。上位10を出す。
+    return _pair_rows(rng, msg_key, data.ZODIAC, include_same=False, top_n=10)
 
 
 _BUILDERS = {
@@ -150,6 +228,9 @@ _BUILDERS = {
     "blood": _blood_rows,
     "blood_compat": _blood_compat_rows,
     "lucky_color": _lucky_color_rows,
+    "mbti": _mbti_rows,
+    "blood_pair": _blood_pair_rows,
+    "zodiac_pair": _zodiac_pair_rows,
 }
 
 
@@ -164,9 +245,18 @@ def build_post(d, theme_key=None, spec=None) -> dict:
     rows = _BUILDERS[spec["kind"]](rng, spec["msg"])
     mode = "color" if spec["kind"] == "lucky_color" else "rank"
 
+    # キャラ画像(assets/mascots/<key>.png)があれば自動でひも付け（無ければ None のまま）
+    for row in rows:
+        row["mascot"] = _mascot_rel(row.get("key"))
+
     tag = spec["emoji_tag"]
     caption = f"{tag}{spec['title']}｜{schedule.date_label(d)}\n"
-    if mode == "rank":
+    kind = spec["kind"]
+    if kind in ("blood_pair", "zodiac_pair"):
+        caption += f"今日のベストペアは{rows[0]['name']}♡ あなたの推しペアは？コメントで教えてね👇\n"
+    elif kind == "mbti":
+        caption += f"1位は{rows[0]['name']}！あなたのMBTIは何位？コメントで教えてね👇\n"
+    elif mode == "rank":
         caption += f"1位は{rows[0]['name']}！あなたは何位？コメントで教えてね👇\n"
     else:
         caption += "あなたの星座のラッキーカラーは？保存して持ち歩いてね👇\n"
