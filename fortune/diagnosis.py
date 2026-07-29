@@ -140,9 +140,123 @@ TOPICS = [
             ("未読が溜まりがち", "悪気なく放置しがち", ["virgo", "libra", "capricorn", "aquarius"]),
         ],
     },
+    # ===== 追加：人気の%グリッド =====
+    {
+        "id": "sukibare", "kind": "zodiac_percent", "style": "pink", "unit": "%",
+        "title": "12星座の好きバレ率", "subtitle": "好きな人にバレやすいのは？",
+        "items": {
+            "aries": (95, "全身で好き", "態度に全部出る"), "taurus": (30, "隠し上手", "顔に出さない"),
+            "gemini": (88, "話しかけ増", "つい目で追う"), "cancer": (80, "挙動不審", "わかりやすい"),
+            "leo": (92, "グイグイ", "独占欲だだ漏れ"), "virgo": (40, "平静を装う", "陰でソワソワ"),
+            "libra": (55, "全員に優しい", "撹乱して隠す"), "scorpio": (20, "完全ポーカー", "絶対バレない"),
+            "sagittarius": (85, "ストレート", "好意まっすぐ"), "capricorn": (35, "塩対応化", "逆に冷たく"),
+            "aquarius": (60, "読めない", "態度が謎"), "pisces": (90, "うるうる", "目が物語る"),
+        },
+    },
+    {
+        "id": "terekakushi", "kind": "zodiac_percent", "style": "purple", "unit": "%",
+        "title": "12星座の照れ隠し度", "subtitle": "素直になれないのは？",
+        "items": {
+            "aries": (70, "つい強気", "照れて強がる"), "taurus": (50, "無言照れ", "黙り込む"),
+            "gemini": (65, "茶化す", "冗談でごまかす"), "cancer": (80, "拗ねる", "素直じゃない"),
+            "leo": (60, "咳払い", "威厳を保つ"), "virgo": (75, "早口否定", "「別に」連発"),
+            "libra": (45, "笑顔で流す", "スマートに逃げる"), "scorpio": (90, "塩対応化", "好きほど冷たく"),
+            "sagittarius": (40, "笑ってごまかす", "ノリで隠す"), "capricorn": (85, "真顔防御", "感情を出さない"),
+            "aquarius": (95, "話題変える", "急に別の話"), "pisces": (55, "顔真っ赤", "隠しきれない"),
+        },
+    },
+    {
+        "id": "iikaeshi", "kind": "zodiac_percent", "style": "gold", "unit": "%",
+        "title": "12星座の言い返す度", "subtitle": "売られた喧嘩を買うのは？",
+        "items": {
+            "aries": (99, "秒で応戦", "即買い"), "taurus": (60, "溜めて反撃", "限界で一撃"),
+            "gemini": (85, "口が達者", "言葉で圧倒"), "cancer": (30, "泣き寝入り", "後で凹む"),
+            "leo": (90, "プライド戦", "負けを認めない"), "virgo": (80, "正論ラッシュ", "理詰めで詰める"),
+            "libra": (40, "穏便に回避", "荒立てない"), "scorpio": (95, "執念の反撃", "倍返し"),
+            "sagittarius": (55, "笑って流す", "気にしない"), "capricorn": (70, "冷静に論破", "感情抜き"),
+            "aquarius": (65, "論点ずらし", "煙に巻く"), "pisces": (20, "言い返せない", "飲み込む"),
+        },
+    },
+    {
+        "id": "atodeyaru", "kind": "zodiac_percent", "style": "blue", "unit": "%",
+        "title": "12星座の後でやる率", "subtitle": "後回しにしがちなのは？",
+        "items": {
+            "aries": (78, "熱で動く", "気分次第"), "taurus": (85, "腰が重い", "動くまで長い"),
+            "gemini": (80, "目移り", "別のこと開始"), "cancer": (55, "気分屋", "ノると早い"),
+            "leo": (60, "直前本気", "追込まれ覚醒"), "virgo": (20, "即着手", "計画的"),
+            "libra": (65, "迷って停滞", "決められない"), "scorpio": (40, "一点集中", "決めたら早い"),
+            "sagittarius": (88, "明日やる", "楽観先延ばし"), "capricorn": (15, "前倒し", "早めに片付け"),
+            "aquarius": (82, "気分次第", "興味が全て"), "pisces": (90, "夢の中", "気づけば締切"),
+        },
+    },
+    {
+        "id": "sewayaki", "kind": "zodiac_percent", "style": "green", "unit": "%",
+        "title": "12星座の世話焼き度", "subtitle": "面倒見がいいのは？",
+        "items": {
+            "aries": (70, "兄貴肌", "ほっとけない"), "taurus": (75, "陰で支える", "黙って助ける"),
+            "gemini": (55, "情報係", "役立つ話"), "cancer": (95, "ママ気質", "尽くしすぎ"),
+            "leo": (85, "親分肌", "頼られたい"), "virgo": (90, "気配りの鬼", "先回りケア"),
+            "libra": (65, "バランス係", "場を整える"), "scorpio": (60, "身内限定", "選んだ人に全力"),
+            "sagittarius": (50, "放任型", "自由にさせる"), "capricorn": (72, "現実支援", "具体的に助ける"),
+            "aquarius": (40, "見守り型", "干渉しない"), "pisces": (88, "共感係", "寄り添い上手"),
+        },
+    },
+    {
+        "id": "sokubaku", "kind": "zodiac_percent", "style": "pink", "unit": "%",
+        "title": "12星座の束縛強め度", "subtitle": "恋人を独占したいのは？",
+        "items": {
+            "aries": (75, "まっすぐ独占", "好きを隠さず"), "taurus": (88, "手放さない", "安定を求める"),
+            "gemini": (40, "自由派", "束縛は苦手"), "cancer": (90, "甘え独占", "そばにいたい"),
+            "leo": (85, "一番でいたい", "注目を独占"), "virgo": (60, "心配性", "つい確認"),
+            "libra": (45, "スマート", "束縛を嫌う"), "scorpio": (99, "完全独占", "深く一途"),
+            "sagittarius": (20, "超自由", "束縛ゼロ"), "capricorn": (70, "静かに独占", "態度に出さず"),
+            "aquarius": (25, "個人主義", "距離を保つ"), "pisces": (80, "依存型", "尽くして囲う"),
+        },
+    },
+    {
+        "id": "mbti_tensai", "kind": "mbti_percent", "style": "purple", "unit": "%",
+        "title": "MBTI別の天才率", "subtitle": "発想がぶっ飛んでるのは？",
+        "items": {
+            "INTJ": (92, "戦略天才", "数手先を読む"), "INTP": (95, "理論天才", "独自理論"),
+            "ENTJ": (85, "統率天才", "人を動かす"), "ENTP": (90, "発想天才", "アイデア無限"),
+            "INFJ": (80, "洞察天才", "本質を見抜く"), "INFP": (78, "空想天才", "独自の世界"),
+            "ENFJ": (75, "共感天才", "人心掌握"), "ENFP": (82, "ひらめき", "思いつき爆発"),
+            "ISTJ": (50, "堅実型", "コツコツ派"), "ISFJ": (45, "サポート型", "縁の下の力"),
+            "ESTJ": (60, "実務天才", "段取り最強"), "ESFJ": (48, "調整型", "空気を読む"),
+            "ISTP": (88, "職人天才", "手が動く"), "ISFP": (70, "感性天才", "センスの塊"),
+            "ESTP": (72, "瞬発天才", "行動が速い"), "ESFP": (68, "エンタメ天才", "場を沸かす"),
+        },
+    },
+    # ===== 追加：グループ分け =====
+    {
+        "id": "tachinaori", "kind": "zodiac_groups", "style": "blue",
+        "title": "12星座の立ち直り方", "subtitle": "落ち込んだ時どうする？",
+        "groups": [
+            ("寝て忘れる", "睡眠でリセット", ["aries", "sagittarius", "leo", "gemini"]),
+            ("人に話す", "話してスッキリ", ["cancer", "libra", "pisces", "taurus"]),
+            ("一人でこもる", "静かに回復", ["virgo", "scorpio", "capricorn", "aquarius"]),
+        ],
+    },
+    {
+        "id": "honshou", "kind": "zodiac_groups", "style": "orange",
+        "title": "親しい人にだけ出る本性", "subtitle": "心を許すとこうなる",
+        "groups": [
+            ("急に甘えん坊", "実はデレる", ["cancer", "pisces", "leo", "taurus"]),
+            ("毒舌全開", "本音ダダ漏れ", ["gemini", "virgo", "sagittarius", "aquarius"]),
+            ("無言で安心", "一緒にいるだけ", ["scorpio", "capricorn", "libra", "aries"]),
+        ],
+    },
 ]
 
 TOPICS_BY_ID = {t["id"]: t for t in TOPICS}
+
+# 夜投稿のローテーション順（このリストを日付順に消化していく）
+NIGHT_ORDER = [t["id"] for t in TOPICS]
+
+
+def night_topic_for(d):
+    """日付から夜投稿のトピックIDを返す（NIGHT_ORDER を巡回）。"""
+    return NIGHT_ORDER[d.toordinal() % len(NIGHT_ORDER)]
 
 
 def _rng(*parts):
