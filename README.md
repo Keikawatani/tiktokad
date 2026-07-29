@@ -58,7 +58,17 @@ python scripts/make.py --date 2026-08-01 --days 30 --no-video
 
 # 半年分の投稿スケジュール表を書き出す
 python scripts/export_schedule.py --date 2026-08-01 --days 182
+
+# ★1ヶ月分の「初稿画像＋簡潔な投稿文」を一括書き出し＆ZIP化（デザインは各自で載せ替え）
+python scripts/export_drafts.py --date 2026-08-01 --days 30
+#   -> drafts/2026-08-01_30days/ に 画像＋各txt＋captions.md、そして .zip
 ```
+
+## デザインは自分でやりたい場合（初稿ワークフロー）
+
+デザインはご自身で作り込みたい場合、**中身だけを載せたシンプルな初稿**を一括で出せます（`templates/plain.html`）。
+`export_drafts.py` が「1画像＝1投稿」で **画像＋超簡潔な投稿文** をセット出力するので、**画像のデザインだけ整えてそのまま投稿**できます。
+装飾入りが良ければ `--template templates/ranking.html` を付けてください。
 
 出力は `output/<日付>_<テーマ>/` に:
 ```
@@ -91,9 +101,11 @@ fortune/            コンテンツ生成（Python・依存なし）
   schedule.py         曜日ローテーションと日付ユーティリティ
   generator.py        日付 -> 1投稿分のデータ(dict)
 templates/
-  ranking.html        可愛いランキング表テンプレート（データ駆動）
+  ranking.html        可愛い装飾版テンプレート（データ駆動）
+  plain.html          初稿用シンプルテンプレート（デザインを自分で載せる用）
 scripts/
   make.py             司令塔（生成→レンダリング→動画化）
+  export_drafts.py    1ヶ月分の初稿画像＋投稿文を一括出力＆ZIP化
   render.mjs          HTML+データ -> PNG（Playwright）
   build_video.sh      PNG+BGM -> MP4（ffmpeg）
   export_schedule.py  スケジュールをCSV/Markdownで出力
@@ -105,6 +117,7 @@ docs/
   strategy.md         収益化の現実と伸ばし方（最初に読む）
   workflow.md         量産の具体フロー
   mascots.md          参考画像のような星座キャラを出す方法
+  bgm-picks.md        流行り系BGM30選＋トレンド音源の探し方
   schedule.csv        自動生成される投稿スケジュール
 samples/              サンプル出力（各テーマ1枚ずつ）
 ```

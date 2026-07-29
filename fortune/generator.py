@@ -249,18 +249,31 @@ def build_post(d, theme_key=None, spec=None) -> dict:
     for row in rows:
         row["mascot"] = _mascot_rel(row.get("key"))
 
-    tag = spec["emoji_tag"]
-    caption = f"{tag}{spec['title']}｜{schedule.date_label(d)}\n"
     kind = spec["kind"]
-    if kind in ("blood_pair", "zodiac_pair"):
-        caption += f"今日のベストペアは{rows[0]['name']}♡ あなたの推しペアは？コメントで教えてね👇\n"
-    elif kind == "mbti":
-        caption += f"1位は{rows[0]['name']}！あなたのMBTIは何位？コメントで教えてね👇\n"
-    elif mode == "rank":
-        caption += f"1位は{rows[0]['name']}！あなたは何位？コメントで教えてね👇\n"
-    else:
-        caption += "あなたの星座のラッキーカラーは？保存して持ち歩いてね👇\n"
-    caption += " ".join(_BASE_HASHTAGS)
+    tag = spec["emoji_tag"]
+    first = rows[0]["name"]
+    # 簡潔な投稿文（1行フック＋ハッシュタグ4つ）
+    hooks = {
+        "zodiac": f"1位は{first}✨ あなたは何位？",
+        "blood": f"1位は{first}✨ あなたは何型？",
+        "blood_compat": f"1位は{first}✨ 気になる相手は？",
+        "mbti": f"1位は{first}✨ あなたのMBTIは？",
+        "lucky_color": "あなたのラッキーカラーは？保存してね",
+        "blood_pair": f"今日のベストペアは{first}💞",
+        "zodiac_pair": f"今日の運命ペアは{first}💞",
+    }
+    hashtags = {
+        "zodiac": ["#占い", "#星座占い", "#今日の運勢", "#fyp"],
+        "blood": ["#占い", "#血液型占い", "#今日の運勢", "#fyp"],
+        "blood_compat": ["#占い", "#血液型占い", "#相性占い", "#fyp"],
+        "mbti": ["#占い", "#MBTI", "#性格診断", "#fyp"],
+        "lucky_color": ["#占い", "#星座占い", "#ラッキーカラー", "#fyp"],
+        "blood_pair": ["#占い", "#血液型占い", "#相性占い", "#fyp"],
+        "zodiac_pair": ["#占い", "#星座占い", "#相性占い", "#fyp"],
+    }
+    tags = hashtags.get(kind, ["#占い", "#今日の運勢", "#fyp", "#おすすめ"])
+    hook = hooks.get(kind, f"1位は{first}✨")
+    caption = f"{tag}{spec['title']}｜{schedule.date_label(d)}\n{hook}\n" + " ".join(tags)
 
     return {
         "date": d.isoformat(),
@@ -275,6 +288,6 @@ def build_post(d, theme_key=None, spec=None) -> dict:
         "handle": HANDLE,
         "cta": CTA,
         "rows": rows,
-        "hashtags": _BASE_HASHTAGS,
+        "hashtags": tags,
         "caption": caption,
     }

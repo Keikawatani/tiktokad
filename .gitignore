@@ -1,5 +1,6 @@
 # 生成物（大量になるためコミットしない。サンプルは samples/ に置く）
 output/
+drafts/
 
 # Python
 __pycache__/
