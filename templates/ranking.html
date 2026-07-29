@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- フォントはローカル化した Google Fonts (Zen Maru Gothic / M PLUS Rounded 1c) を使用。
+     render スクリプトが file:// で開くので相対パスで解決される。 -->
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<style>
+  :root{ --bg1:#FFF0F5; --bg2:#FFE3EF; --accent:#FF6FA5; --ink:#5A3A4A; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{width:1080px; height:1920px;}
+  body{
+    font-family:"Zen Maru Gothic","Noto Sans CJK JP",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 820px at 12% -6%, #ffffff 0%, rgba(255,255,255,0) 55%),
+      radial-gradient(900px 700px at 108% 8%, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 50%),
+      linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 100%);
+    overflow:hidden; position:relative;
+  }
+  .blob{position:absolute; border-radius:50%; filter:blur(3px); opacity:.30; pointer-events:none;}
+
+  .frame{position:absolute; inset:30px; display:flex; flex-direction:column;}
+
+  /* ===== ヘッダー ===== */
+  header{
+    text-align:center; padding:26px 40px 20px;
+    background:rgba(255,255,255,.68);
+    border-radius:40px;
+    box-shadow:0 16px 40px rgba(255,120,170,.16), inset 0 0 0 3px rgba(255,255,255,.9);
+  }
+  .datepill{
+    display:inline-block; font-weight:700; font-size:32px; letter-spacing:.04em; color:#fff;
+    background:var(--accent); padding:7px 28px; border-radius:999px; margin-bottom:14px;
+    box-shadow:0 8px 18px rgba(255,111,165,.35);
+  }
+  h1{
+    font-family:"Zen Maru Gothic"; font-weight:900; font-size:94px; line-height:1.02;
+    color:var(--ink); text-shadow:0 3px 0 #fff, 0 10px 22px rgba(255,120,170,.20);
+  }
+  .subtitle{margin-top:12px; font-size:36px; font-weight:700; color:var(--accent); letter-spacing:.05em;}
+
+  /* ===== リスト ===== */
+  .list{flex:1; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:18px 2px;}
+  .row{
+    display:flex; align-items:center; gap:24px;
+    background:rgba(255,255,255,.85);
+    border-radius:26px; padding:13px 26px;
+    box-shadow:0 8px 20px rgba(150,120,140,.12), inset 0 0 0 2px rgba(255,255,255,.85);
+  }
+
+  .badge{
+    flex:0 0 auto; width:84px; height:84px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"M PLUS Rounded 1c"; font-weight:800; color:#fff; font-size:46px; line-height:1;
+    box-shadow:0 8px 16px rgba(0,0,0,.14), inset 0 -5px 10px rgba(0,0,0,.10), inset 0 4px 8px rgba(255,255,255,.5);
+  }
+  .swatch{flex:0 0 auto; width:84px; height:84px; border-radius:22px;
+    box-shadow:0 8px 16px rgba(0,0,0,.14), inset 0 0 0 5px rgba(255,255,255,.9);}
+  .row.medal1 .badge{outline:6px solid #FFD65C; outline-offset:4px;}
+  .row.medal2 .badge{outline:6px solid #CBD3DD; outline-offset:4px;}
+  .row.medal3 .badge{outline:6px solid #E7B583; outline-offset:4px;}
+
+  .body{flex:1; min-width:0;}
+  .name{font-size:44px; font-weight:900; font-family:"Zen Maru Gothic"; line-height:1.12;
+    display:flex; align-items:baseline; gap:12px; white-space:nowrap;}
+  .name .dates{font-size:22px; font-weight:500; color:#ac93a1;}
+  .comment{margin-top:3px; font-size:30px; font-weight:700; color:#6b4b5b; line-height:1.2;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+  .meta{flex:0 0 auto; width:236px; text-align:right;}
+  .stars{font-size:32px; color:var(--accent); letter-spacing:2px; line-height:1;}
+  .stars .off{color:rgba(255,111,165,.26);}
+  .item{margin-top:6px; font-size:23px; font-weight:500; color:#9a7f8d;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+  /* ===== 少数行(血液型など)は広めにゆったり ===== */
+  .list.few{gap:22px; padding:30px 2px; justify-content:center;}
+  .few .row{padding:30px 34px; gap:30px;}
+  .few .badge{width:130px; height:130px; font-size:66px;}
+  .few .swatch{width:130px; height:130px; border-radius:30px;}
+  .few .name{font-size:66px;}
+  .few .name .dates{font-size:28px;}
+  .few .comment{font-size:44px; white-space:normal;}
+  .few .meta{width:300px;}
+  .few .stars{font-size:44px;}
+  .few .item{font-size:30px; white-space:normal;}
+
+  /* ===== フッター ===== */
+  footer{display:flex; align-items:center; justify-content:space-between; gap:20px; padding:4px 6px 0;}
+  .handle{font-size:34px; font-weight:700; color:var(--accent); opacity:.9;}
+  .cta{font-size:38px; font-weight:800; color:#fff; background:var(--accent);
+    padding:14px 38px; border-radius:999px; box-shadow:0 10px 22px rgba(255,111,165,.34);}
+  .disclaimer{font-size:20px; color:rgba(120,90,105,.5); font-weight:500;}
+</style>
+</head>
+<body>
+  <div class="blob" style="width:260px;height:260px;left:-60px;top:640px;background:#FFC0DA"></div>
+  <div class="blob" style="width:200px;height:200px;right:-50px;top:1180px;background:#C9B7FF"></div>
+  <div class="blob" style="width:150px;height:150px;left:60px;bottom:120px;background:#BDE9FF"></div>
+
+  <div class="frame">
+    <header>
+      <div class="datepill" id="datepill"></div>
+      <h1 id="title"></h1>
+      <div class="subtitle" id="subtitle"></div>
+    </header>
+    <div class="list" id="list"></div>
+    <footer>
+      <div class="handle" id="handle"></div>
+      <div class="disclaimer">※エンタメ占いです</div>
+      <div class="cta" id="cta"></div>
+    </footer>
+  </div>
+
+<script>
+function starStr(n){
+  let s='';
+  for(let i=0;i<5;i++) s += (i<n) ? '<span>★</span>' : '<span class="off">★</span>';
+  return s;
+}
+function render(d){
+  const P = d.palette || {};
+  const rs = document.documentElement.style;
+  for(const k of ['bg1','bg2','accent','ink']) if(P[k]) rs.setProperty('--'+k, P[k]);
+
+  document.getElementById('datepill').textContent = d.date_label;
+  document.getElementById('title').textContent = d.title;
+  document.getElementById('subtitle').textContent = d.subtitle;
+  document.getElementById('handle').textContent = d.handle || '';
+  document.getElementById('cta').textContent = d.cta || '';
+
+  const few = d.rows.length <= 6;
+  const list = document.getElementById('list');
+  list.className = 'list' + (few ? ' few' : '');
+  list.innerHTML = '';
+
+  for(const row of d.rows){
+    const el = document.createElement('div');
+    el.className = 'row';
+    if(row.rank>=1 && row.rank<=3) el.className += ' medal'+row.rank;
+
+    let left;
+    if(d.mode === 'color' && row.swatch){
+      left = `<div class="swatch" style="background:${row.swatch}"></div>`;
+    } else {
+      const g = row.grad || ['#FF9A8B','#FF6A88'];
+      left = `<div class="badge" style="background:linear-gradient(145deg,${g[0]},${g[1]})">${row.rank ?? ''}</div>`;
+    }
+    const dates = row.sub ? `<span class="dates">${row.sub}</span>` : '';
+    const stars = (row.stars!=null) ? `<div class="stars">${starStr(row.stars)}</div>` : '';
+    // 右カラム: 星（あれば）＋ ラッキー情報。少数行では note を、多数行では短い item を出す。
+    const metaText = few ? (row.note || '') : (row.item || '');
+    const meta = `<div class="meta">${stars}${metaText ? `<div class="item">${metaText}</div>` : ''}</div>`;
+
+    el.innerHTML = `${left}
+      <div class="body">
+        <div class="name">${row.name}${dates}</div>
+        <div class="comment">${row.comment}</div>
+      </div>${meta}`;
+    list.appendChild(el);
+  }
+}
+if(window.__DATA__) render(window.__DATA__);
+</script>
+</body>
+</html>

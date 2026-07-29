@@ -1,0 +1,14 @@
+# 生成物（大量になるためコミットしない。サンプルは samples/ に置く）
+output/
+
+# Python
+__pycache__/
+*.pyc
+
+# 音源（各自が用意。ライセンスの都合でリポジトリには入れない）
+assets/bgm/*
+!assets/bgm/.gitkeep
+!assets/bgm/README.md
+
+# OS
+.DS_Store
